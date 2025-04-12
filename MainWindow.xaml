@@ -1,0 +1,128 @@
+﻿<Window x:Class="BatchRename.MainWindow"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:BatchRename"
+		xmlns:viewModels="clr-namespace:BatchRename.ViewModels"
+		mc:Ignorable="d"
+		Title="批量重命名文件"
+		Icon="{StaticResource UseRegularExpressionsIcon}"
+		Height="300"
+		Width="500">
+	<Window.DataContext>
+		<viewModels:MainViewModel />
+	</Window.DataContext>
+	<Grid Margin="10">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
+		<!--todo 未填写时灰色占位符-->
+		<!-- 文件夹路径输入框和浏览按钮 -->
+		<TextBox Name="floderPath"
+				 Text="{Binding Model.FolderPath, UpdateSourceTrigger=PropertyChanged}"
+				 Height="20"
+				 Grid.Row="0"
+				 Grid.Column="0"
+				 Margin="0 0 10 5"
+				 VerticalAlignment="Center" />
+
+		<Button Content="浏览"
+				Grid.Row="0"
+				Grid.Column="1"
+				Margin="0 0 0 5"
+				Command="{Binding Model.BrowseCommand}" />
+
+		<!-- 匹配模式输入框 -->
+		<TextBox Text="{Binding Model.MatchPattern, UpdateSourceTrigger=PropertyChanged}"
+				 Grid.Row="1"
+				 Grid.Column="0"
+				 Margin="0 0 10 5"
+				 VerticalAlignment="Center" />
+
+		<Button Content="匹配"
+				Grid.Row="1"
+				Grid.Column="1"
+				Margin="0 0 0 5"
+				IsEnabled="False" />
+		<!-- 和正则复选框 -->
+		<UniformGrid Columns="3"
+					 Grid.Row="2"
+					 Grid.Column="0"
+					 Margin="0 0 10 5">
+			<!-- 使用正则匹配 -->
+			<CheckBox Name="RegularExpression"
+					  IsChecked="{Binding Model.UseRegex, UpdateSourceTrigger=PropertyChanged}"
+					  HorizontalAlignment="Left">
+				<CheckBox.Content>
+					<StackPanel Orientation="Horizontal">
+						<Image Width="16"
+							   Height="16"
+							   Stretch="None"
+							   Source="{StaticResource UseRegularExpressionsIcon}" />
+						<TextBlock Text="使用正则匹配" />
+					</StackPanel>
+				</CheckBox.Content>
+			</CheckBox>
+
+			<!-- 区分大小写 -->
+			<CheckBox IsChecked="{Binding Model.CaseSensitive, UpdateSourceTrigger=PropertyChanged}"
+					  Margin="0,0,5,0"
+					  HorizontalAlignment="Center">
+				<CheckBox.Content>
+					<StackPanel Orientation="Horizontal">
+						<Image Width="16"
+							   Height="16"
+							   Stretch="None"
+							   Source="{StaticResource MatchCaseIcon}" />
+						<TextBlock Text="区分大小写" />
+					</StackPanel>
+				</CheckBox.Content>
+			</CheckBox>
+
+			<!-- 全字匹配 -->
+			<CheckBox IsChecked="{Binding Model.WholeWordMatch, UpdateSourceTrigger=PropertyChanged}"
+					  Margin="0,0,5,0"
+					  HorizontalAlignment="Right">
+				<CheckBox.Content>
+					<StackPanel Orientation="Horizontal">
+						<Image Width="16"
+							   Height="16"
+							   Stretch="None"
+							   Source="{StaticResource MatchWholeWordsIcon}" />
+						<TextBlock Text="全词匹配" />
+					</StackPanel>
+				</CheckBox.Content>
+			</CheckBox>
+
+		</UniformGrid>
+
+		<!-- 替换内容输入框 -->
+		<TextBox Text="{Binding Model.Replacement, UpdateSourceTrigger=PropertyChanged}"
+				 Grid.Row="3"
+				 Grid.Column="0"
+				 Margin="0 0 10 5"
+				 VerticalAlignment="Center" />
+
+		<Button Content="测试"
+		        Grid.Row="3"
+		        Grid.Column="1"
+		        Margin="0 0 0 5"
+		        IsEnabled="False" />
+
+		<!-- 应用按钮 -->
+		<Button Content="应用"
+				Grid.Row="4"
+				Grid.Column="1"
+				VerticalAlignment="Bottom"
+				Command="{Binding Model.ApplyCommand}" />
+	</Grid>
+</Window>

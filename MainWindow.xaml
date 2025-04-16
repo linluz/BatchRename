@@ -5,6 +5,7 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:BatchRename"
 		xmlns:viewModels="clr-namespace:BatchRename.ViewModels"
+		xmlns:lComponents="clr-namespace:L_WPF_Components;assembly=L-WPF-Components"
 		mc:Ignorable="d"
 		Title="批量重命名文件"
 		Icon="{StaticResource UseRegularExpressionsIcon}"
@@ -25,15 +26,15 @@
 			<ColumnDefinition Width="*" />
 			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
-		<!--todo 未填写时灰色占位符-->
 		<!-- 文件夹路径输入框和浏览按钮 -->
-		<TextBox Name="floderPath"
-				 Text="{Binding Model.FolderPath, UpdateSourceTrigger=PropertyChanged}"
-				 Height="20"
-				 Grid.Row="0"
-				 Grid.Column="0"
-				 Margin="0 0 10 5"
-				 VerticalAlignment="Center" />
+		<lComponents:PlaceholderTextBox Name="floderPath"
+										Text="{Binding Model.FolderPath, UpdateSourceTrigger=PropertyChanged}"
+										Height="20"
+										Grid.Row="0"
+										Grid.Column="0"
+										Margin="0 0 10 5"
+										VerticalAlignment="Center"
+										PlaceholderText="欲改名文件所在的文件夹路径" />
 
 		<Button Content="浏览"
 				Grid.Row="0"
@@ -42,11 +43,12 @@
 				Command="{Binding Model.BrowseCommand}" />
 
 		<!-- 匹配模式输入框 -->
-		<TextBox Text="{Binding Model.MatchPattern, UpdateSourceTrigger=PropertyChanged}"
-				 Grid.Row="1"
-				 Grid.Column="0"
-				 Margin="0 0 10 5"
-				 VerticalAlignment="Center" />
+		<lComponents:PlaceholderTextBox Text="{Binding Model.MatchPattern, UpdateSourceTrigger=PropertyChanged}"
+										Grid.Row="1"
+										Grid.Column="0"
+										Margin="0 0 10 5"
+										VerticalAlignment="Center"
+										PlaceholderText="要匹配的文本或正则表达式" />
 
 		<Button Content="匹配"
 				Grid.Row="1"
@@ -75,7 +77,6 @@
 
 			<!-- 区分大小写 -->
 			<CheckBox IsChecked="{Binding Model.CaseSensitive, UpdateSourceTrigger=PropertyChanged}"
-					  Margin="0,0,5,0"
 					  HorizontalAlignment="Center">
 				<CheckBox.Content>
 					<StackPanel Orientation="Horizontal">
@@ -90,7 +91,6 @@
 
 			<!-- 全字匹配 -->
 			<CheckBox IsChecked="{Binding Model.WholeWordMatch, UpdateSourceTrigger=PropertyChanged}"
-					  Margin="0,0,5,0"
 					  HorizontalAlignment="Right">
 				<CheckBox.Content>
 					<StackPanel Orientation="Horizontal">
@@ -98,7 +98,8 @@
 							   Height="16"
 							   Stretch="None"
 							   Source="{StaticResource MatchWholeWordsIcon}" />
-						<TextBlock Text="全词匹配" />
+						<TextBlock Text="全词匹配" 
+						           Margin="0 0 1 0"/>
 					</StackPanel>
 				</CheckBox.Content>
 			</CheckBox>
@@ -106,17 +107,18 @@
 		</UniformGrid>
 
 		<!-- 替换内容输入框 -->
-		<TextBox Text="{Binding Model.Replacement, UpdateSourceTrigger=PropertyChanged}"
-				 Grid.Row="3"
-				 Grid.Column="0"
-				 Margin="0 0 10 5"
-				 VerticalAlignment="Center" />
+		<lComponents:PlaceholderTextBox Text="{Binding Model.Replacement, UpdateSourceTrigger=PropertyChanged}"
+		                                Grid.Row="3"
+		                                Grid.Column="0"
+		                                Margin="0 0 10 5"
+		                                VerticalAlignment="Center"
+		                                PlaceholderText="要替换成的文本或正则表达式" />
 
 		<Button Content="测试"
-		        Grid.Row="3"
-		        Grid.Column="1"
-		        Margin="0 0 0 5"
-		        IsEnabled="False" />
+				Grid.Row="3"
+				Grid.Column="1"
+				Margin="0 0 0 5"
+				IsEnabled="False" />
 
 		<!-- 应用按钮 -->
 		<Button Content="应用"

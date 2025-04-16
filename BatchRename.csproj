@@ -27,4 +27,8 @@
     <Folder Include="ViewModels\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\L-WPF-Components\L-WPF-Components.csproj" />
+  </ItemGroup>
+
 </Project>

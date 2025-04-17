@@ -1,6 +1,5 @@
 using System.IO;
 using System.Windows;
-using System.Windows.Input;
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -21,32 +20,41 @@ namespace BatchRename.Models
         /// </summary>
         public static FileRenameModel Instance => _instance ??= new FileRenameModel();
 
-        private FileRenameModel()
-        {
-            BrowseCommand = new RelayCommand(BrowseFolder);
-            ApplyCommand = new RelayCommand(ApplyRename);
-        }
-
-        public ICommand BrowseCommand { get; }
-        public ICommand ApplyCommand { get; }
-
         #region ObservableProperty
 
         /// <summary>
         /// 文件夹路径
         /// </summary>
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ApplyRenameCommand))]
         private string? folderPath;
         /// <summary>
         /// 匹配模式
         /// </summary>
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ApplyRenameCommand))]
         private string? matchPattern;
         /// <summary>
         /// 替换文本
         /// </summary>
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(ApplyRenameCommand))]
         private string? replacement;
+        /// <summary>
+        /// 文件夹路径错误
+        /// </summary>
+        [ObservableProperty]
+        private string? folderPathError;
+        /// <summary>
+        /// 匹配模式错误
+        /// </summary>
+        [ObservableProperty]
+        private string? matchPatternError;
+        /// <summary>
+        /// 替换文本错误
+        /// </summary>
+        [ObservableProperty]
+        private string? replacementError;
         /// <summary>
         /// 是否使用正则表达式
         /// </summary>
@@ -76,10 +84,10 @@ namespace BatchRename.Models
 
         #endregion
 
-
         /// <summary>
         /// 浏览按钮点击事件
         /// </summary>
+        [RelayCommand]
         private void BrowseFolder()
         {
             var dialog = new OpenFolderDialog();
@@ -91,30 +99,32 @@ namespace BatchRename.Models
         /// <summary>
         /// 使用的替换方法
         /// </summary>
-        private Func<string,string> ReplaceFunc => UseRegex
+        private Func<string, string> ReplaceFunc => UseRegex
             ? RegexReplace
             : StringReplace;
 
         /// <summary>
         /// 应用按钮点击事件
         /// </summary>
+        [RelayCommand(CanExecute = nameof(CanRename))]
         private void ApplyRename()
         {
             try
             {//todo 优化为在文本框中显示红色的错误信息
-                if (FolderPath.IsNullOrWhiteSpace()
-                        .ShowErrMessage("文件夹路径无效。", "失败") 
-                    || !Directory.Exists(FolderPath))
-                    return;
-                if (MatchPattern.IsNullOrEmpty()
-                    .ShowErrMessage("匹配模式不能为空。", "失败"))
-                    return;
+                //if ((FolderPath.IsNullOrWhiteSpace()
+                //     || !Directory.Exists(FolderPath))
+                //        .ShowErrMessage("文件夹路径无效。", "失败") 
+                //    )
+                //    return;
+                //if (MatchPattern.IsNullOrEmpty()
+                //    .ShowErrMessage("匹配模式不能为空。", "失败"))
+                //    return;
 
-                if ((Replacement==null)
-                    .ShowErrMessage("替换文本不能为null。", "失败"))
-                    return;
+                //if ((Replacement==null)
+                //    .ShowErrMessage("替换文本不能为null。", "失败"))
+                //    return;
 
-                _fullFiles = Directory.GetFiles(FolderPath);
+                _fullFiles = Directory.GetFiles(FolderPath!);
 
                 //获取旧文件名列表
                 OldFiles = [.. _fullFiles
@@ -142,7 +152,38 @@ namespace BatchRename.Models
             {
                 MessageBox.Show($"发生错误: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        /// <summary>
+        /// 是否执行能重命名
+        /// </summary>
+        /// <returns></returns>
+        private bool CanRename()
+        {
+            if (FolderPath.IsNullOrEmpty())
+            {
+                FolderPathError = "文件夹路径不能为空";
+                return false;
             }
+            if (FolderPath!.DirNotExists())
+            {
+                FolderPathError = "文件夹不存在";
+                return false;
+            }
+            if (MatchPattern.IsNullOrEmpty())
+            {
+                MatchPatternError = "匹配的文本或正则表达式不能为空";
+                return false;
+            }
+            // ReSharper disable once InvertIf
+            if (Replacement == null)
+            {
+                ReplacementError = "替换的文本不能为null";
+                return false;
+            }
+
+            return true;
+        }
 
         /// <summary>
         /// 使用简单的字符串替换功能，将指定的子字符串替换为新字符串。

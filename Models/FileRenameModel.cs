@@ -8,6 +8,7 @@ using Sys.Extensions;
 
 namespace BatchRename.Models
 {
+    //todo 实现对比模式、1、匹配 2、显示的文本框、3、显示文本的不同着色
     public partial class FileRenameModel : ObservableObject
     {
         /// <summary>
@@ -110,7 +111,7 @@ namespace BatchRename.Models
         private void ApplyRename()
         {
             try
-            {//todo 优化为在文本框中显示红色的错误信息
+            {
                 //if ((FolderPath.IsNullOrWhiteSpace()
                 //     || !Directory.Exists(FolderPath))
                 //        .ShowErrMessage("文件夹路径无效。", "失败") 
@@ -137,6 +138,9 @@ namespace BatchRename.Models
                 {
                     try
                     {
+                        //todo 让代码支持子文件夹内文件、界面增加按钮
+                        //todo 当前都是统一的前路径 会导致子文件内文件替换错误
+                        //todo 目标文件已存在 没有提示
                         File.Move(_fullFiles[i], $@"{FolderPath}\{NewFiles[i]}");
                     }
                     catch (Exception e)
@@ -160,6 +164,9 @@ namespace BatchRename.Models
         /// <returns></returns>
         private bool CanRename()
         {
+            //todo 0  报错文本的可见性自动化
+            //bug 2、刚打开界面的时候就会出现报错文本，
+            //bug 3、如何避免占位符导致不报错
             if (FolderPath.IsNullOrEmpty())
             {
                 FolderPathError = "文件夹路径不能为空";

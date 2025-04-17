@@ -127,14 +127,14 @@ namespace BatchRename.Models
                 {
                     try
                     {
-                        File.Move(_fullFiles[i], FolderPath + NewFiles[i]);
+                        File.Move(_fullFiles[i], $@"{FolderPath}\{NewFiles[i]}");
                     }
                     catch (Exception e)
                     {
                         MessageBox.Show($"重命名文件{NewFiles[i]}时失败,重命名已停止：\r\n{e.Message}", "失败", MessageBoxButton.OK, MessageBoxImage.Error);
                         return;
                     }
-                }   
+                }
 
                 MessageBox.Show("文件重命名完成！", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
             }
@@ -142,7 +142,7 @@ namespace BatchRename.Models
             {
                 MessageBox.Show($"发生错误: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-        }
+            }
 
         /// <summary>
         /// 使用简单的字符串替换功能，将指定的子字符串替换为新字符串。
@@ -152,29 +152,29 @@ namespace BatchRename.Models
         /// <param name="newValue">用于替换的子字符串。</param>
         /// <returns>替换后的新字符串。</returns>
         private string StringReplace(string originalString) => WholeWordMatch
-            ? string.Join(' ', 
+            ? string.Join(' ',
                 originalString.Split(' ')//按空格分隔
                 .Select(t => t.Equals(MatchPattern,
                     CaseSensitive//区分大小写
-                    ? StringComparison.CurrentCulture
-                    : StringComparison.CurrentCultureIgnoreCase)
+                    ? StringComparison.CurrentCultureIgnoreCase
+                    : StringComparison.CurrentCulture)
                     ? Replacement
                     : t))
             : originalString.Replace(MatchPattern!, Replacement, CaseSensitive
-                ? StringComparison.CurrentCulture
-                : StringComparison.CurrentCultureIgnoreCase);
+                ? StringComparison.CurrentCultureIgnoreCase
+                : StringComparison.CurrentCulture);
 
         //todo 解决logo问题 并把颜色改成白色
-        private string RegexReplace(string input )
+        private string RegexReplace(string input)
         {
 
-            return Regex.Replace(input, 
+            return Regex.Replace(input,
                 WholeWordMatch
                     ? AddWordBoundaries(MatchPattern!)// 添加边界符号以实现全字匹配
-                    : MatchPattern!, 
+                    : MatchPattern!,
                 Replacement!, CaseSensitive //区分大小写
-                ? RegexOptions.None 
-                : RegexOptions.IgnoreCase);
+                ? RegexOptions.IgnoreCase
+                : RegexOptions.None);
         }
 
         /// <summary>
